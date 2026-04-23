@@ -1,0 +1,35 @@
+% AXIOM Protocol — Pandoc Template
+% File extension .latex (not .tex) to avoid accidental cleanup.
+
+\documentclass{axiom-paper}
+
+% ── Metadata from pandoc variables ──
+\title{$title$}
+\author{$author$}
+\date{$date$}
+\axiomversion{$version$}
+$if(secnumdepth)$
+\setcounter{secnumdepth}{$secnumdepth$}
+$endif$
+
+% Pandoc compatibility commands
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\newcommand{\passthrough}[1]{#1}
+
+\begin{document}
+
+\maketitle
+
+$if(abstract)$
+\begin{abstract}
+$abstract$
+\end{abstract}
+$endif$
+
+\tableofcontents
+\newpage
+
+$body$
+
+\end{document}
