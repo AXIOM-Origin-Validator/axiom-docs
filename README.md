@@ -14,9 +14,10 @@ Official specification documents for the AXIOM protocol.
 axiom-docs/
 ├── AXIOM_WhitePaper.md          # Living source — contributors edit here
 ├── genesis/                      # Signed initial release (frozen)
+│   ├── axiom-origin.pub
 │   ├── AXIOM_WhitePaper_v2.28.pdf
-│   ├── AXIOM_WhitePaper_v2.28.pdf.sig
-│   └── axiom-origin.pub
+│   └── sig/
+│       └── AXIOM_WhitePaper_v2.28.pdf.sig
 └── latex/                        # Build tooling for local PDF generation
     ├── Makefile
     ├── axiom-paper.cls
@@ -38,7 +39,7 @@ The `genesis/` directory contains the original signed release of each document. 
 
 ```bash
 gpg --import genesis/axiom-origin.pub
-gpg --verify genesis/AXIOM_WhitePaper_v2.28.pdf.sig genesis/AXIOM_WhitePaper_v2.28.pdf
+gpg --verify genesis/sig/AXIOM_WhitePaper_v2.28.pdf.sig genesis/AXIOM_WhitePaper_v2.28.pdf
 ```
 
 ## Building PDFs Locally
