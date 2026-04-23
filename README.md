@@ -6,9 +6,11 @@ Official published documents for the AXIOM protocol.
 
 | Document | Description | Status |
 |----------|-------------|--------|
-| [AXIOM White Paper](AXIOM_WhitePaper.pdf) | Architecture, threat model, economic design, and coercion resistance | v2.28 |
+| [AXIOM White Paper](pdf/AXIOM_WhitePaper.pdf) | Architecture, threat model, economic design, and coercion resistance | v2.28 |
 
-Markdown sources are in [`src/`](src/) for transparency and change tracking.
+- `pdf/` — published documents
+- `sig/` — detached PGP signatures
+- `src/` — markdown sources
 
 ## Verification
 
@@ -23,7 +25,7 @@ To verify a document:
 
 ```bash
 gpg --import axiom-origin.pub
-gpg --verify AXIOM_WhitePaper.pdf.sig AXIOM_WhitePaper.pdf
+gpg --verify sig/AXIOM_WhitePaper.pdf.sig pdf/AXIOM_WhitePaper.pdf
 ```
 
 The public key is available from:
