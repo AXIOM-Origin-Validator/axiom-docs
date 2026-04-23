@@ -8,6 +8,8 @@ Official published documents for the AXIOM protocol.
 |----------|-------------|--------|
 | [AXIOM White Paper](AXIOM_WhitePaper.pdf) | Architecture, threat model, economic design, and coercion resistance | v2.28 |
 
+Markdown sources are in [`src/`](src/) for transparency and change tracking.
+
 ## Verification
 
 All documents are signed with the AXIOM Origin Validator PGP key.
