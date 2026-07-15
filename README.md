@@ -7,12 +7,31 @@ Official specification documents for the AXIOM protocol.
 | Document | Description |
 |----------|-------------|
 | [AXIOM White Paper](AXIOM_WhitePaper.md) | Architecture, threat model, economic design, and coercion resistance |
+| [AXIOM Yellow Paper](AXIOM_YellowPaper.md) | Full protocol specification — the normative reference |
+| [Yellow Paper: Errors](AXIOM_YellowPaper_Errors.md) | Error taxonomy companion volume |
+| [Yellow Paper: SDK](AXIOM_YellowPaper_SDK.md) | Wallet/SDK behavior companion volume |
+
+## Yellow Paper Extensions (YPX)
+
+The base protocol is extended by numbered YPX documents (`AXIOM_YPX-*.md`), each
+the normative source for one subsystem: FACT provenance (001), Nabla verification
+(002), TARDIS heartbeat (003), DMAP attestation (006), receiver-defined security
+tiers (007), Silicon Pulse audit (009), Ark Confidence Index (010), genesis
+integrity (011), oracle distribution (012), Console engine (013), CLARA & tiered
+bloom memory (018), HAL resurrection (020), OODS (021), RECALL (022), and more.
+
+**Start with the registry**: Yellow Paper §28.2 is the authoritative map of every
+YPX number — including retired numbers and where their content lives today.
+Retired/folded numbers keep a stub file so citations always resolve.
 
 ## Repository Structure
 
 ```
 axiom-docs/
-├── AXIOM_WhitePaper.md          # Living source — contributors edit here
+├── AXIOM_WhitePaper.md          # Living sources — contributors edit here
+├── AXIOM_YellowPaper.md
+├── AXIOM_YellowPaper_Errors.md
+├── AXIOM_YellowPaper_SDK.md
 ├── genesis/                      # Signed initial release (frozen)
 │   ├── axiom-origin.pub
 │   ├── AXIOM_WhitePaper_v2.28.pdf

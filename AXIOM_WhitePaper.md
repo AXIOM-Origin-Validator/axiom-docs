@@ -2612,7 +2612,7 @@ The "3 validators must endorse" rule (the VBC endorsement rule) creates a recurs
 
 AXIOM closes this gap with the **Validator Birth Certificate (VBC)** system.
 
-Each validator carries a VBC - a portable, offline-verifiable cryptographic proof that its endorsement chain traces back to the **Genesis Validators**, whose public keys are hardcoded in `axiom-dmap-core.elf`.
+Each validator carries a VBC - a portable, offline-verifiable cryptographic proof that its endorsement chain traces back to the **Genesis Validators**, whose public keys are hardcoded in `axiom-core.elf`.
 
 **VBC Properties:**
 
@@ -2657,7 +2657,7 @@ The complete VBC specification and protocol rules are defined in the Yellow Pape
 
 ### Security Analysis: Why Money Creation Is Impossible
 
-A critical question arises: If 5 legitimate validators (with valid VBCs, running real axiom-dmap-core.elf) decide to collude, can they create money from nothing?
+A critical question arises: If 5 legitimate validators (with valid VBCs, running real axiom-core.elf) decide to collude, can they create money from nothing?
 
 **Answer: NO.**
 
@@ -2685,7 +2685,7 @@ When a wallet is created (user generates keypair), the balance is always zero. N
 
 **Rule 2: Every transaction satisfies output ≤ input**
 
-This is enforced by axiom-dmap-core.elf, which is identical on every validator (fingerprint verified). No validator can bypass this check.
+This is enforced by axiom-core.elf, which is identical on every validator (fingerprint verified). No validator can bypass this check.
 
 **Mathematical consequence:**
 
@@ -2720,7 +2720,7 @@ This is an invariant that cannot be violated without breaking cryptography.
 
 ```{=latex}
 \begin{description}[style=nextline, leftmargin=1.5em]
-\item[Transaction validation in \texttt{axiom-dmap-core.elf}:]~
+\item[Transaction validation in \texttt{axiom-core.elf}:]~
 \end{description}
 \begin{lstlisting}[language=Python, basicstyle=\small\ttfamily, frame=single, xleftmargin=1.5em]
 if debit.amount > wallet_state.balance:
@@ -2730,10 +2730,10 @@ if debit.amount > wallet_state.balance:
 REJECTED
 \end{lstlisting}
 \begin{description}[style=nextline, leftmargin=1.5em]
-\item[] All 5 validators run SAME \texttt{axiom-dmap-core.elf} (fingerprint verified).\\
-        All 5 get REJECT from their \texttt{axiom-dmap-core.elf}.\\
-        Cannot sign what \texttt{axiom-dmap-core.elf} rejects.
-\item[Result:] \textbf{REJECTED} by \texttt{axiom-dmap-core.elf}.
+\item[] All 5 validators run SAME \texttt{axiom-core.elf} (fingerprint verified).\\
+        All 5 get REJECT from their \texttt{axiom-core.elf}.\\
+        Cannot sign what \texttt{axiom-core.elf} rejects.
+\item[Result:] \textbf{REJECTED} by \texttt{axiom-core.elf}.
 \end{description}
 ```
 
@@ -2757,11 +2757,11 @@ REJECTED
 \end{description}
 ```
 
-**Attempt 4: Modify axiom-dmap-core.elf to skip balance check**
+**Attempt 4: Modify axiom-core.elf to skip balance check**
 
 ```{=latex}
 \begin{description}[style=nextline, leftmargin=1.5em]
-\item[Modified \texttt{axiom-dmap-core.elf}:]~
+\item[Modified \texttt{axiom-core.elf}:]~
   \begin{itemize}[nosep]
     \item Different SHA-256 hash
     \item Different fingerprint
@@ -2825,21 +2825,21 @@ REJECTED
 \draw[arrow] (genesis) -- (mrp);
 \draw[arrow] (mrp) -- node[label, right, xshift=4pt]
     {Claim from Reserve --- needs 3 witnesses\\
-     \texttt{axiom-dmap-core.elf} checks:\\
+     \texttt{axiom-core.elf} checks:\\
      claim $\leq$ Reserve.balance} (user0);
 \draw[arrow] (user0) -- node[label, right, xshift=4pt]
     {} (user1k);
 \draw[arrow] (user1k) -- node[label, right, xshift=4pt]
     {Send to Bob --- needs 3 witnesses\\
-     \texttt{axiom-dmap-core.elf} checks:\\
+     \texttt{axiom-core.elf} checks:\\
      send $\leq$ User.balance} (bob);
 
 \node[below=0.6cm of bob, text width=8cm, align=left, font=\footnotesize] {
     At EVERY step:
     \begin{itemize}[nosep, leftmargin=1em]
         \item Transaction needs 3 witness signatures
-        \item Witnesses run real \texttt{axiom-dmap-core.elf} (VBC + fingerprint verified)
-        \item \texttt{axiom-dmap-core.elf} enforces: output $\leq$ input
+        \item Witnesses run real \texttt{axiom-core.elf} (VBC + fingerprint verified)
+        \item \texttt{axiom-core.elf} enforces: output $\leq$ input
         \item Math always adds up
     \end{itemize}
 };
@@ -2871,7 +2871,7 @@ for i in range(1000):
     \item Must convince 3 REAL validators to sign VBC.
     \item Must stake real AXC.
     \item Must build reputation.
-    \item Even then, \texttt{axiom-dmap-core.elf} still enforces rules.
+    \item Even then, \texttt{axiom-core.elf} still enforces rules.
     \item Balance check still applies.
   \end{itemize}
   \textbf{ATTACK FAILS at balance check.}
@@ -2889,9 +2889,9 @@ Money creation is impossible because:
 3. Transactions require source with balance
 4. Sources also started at 0
 5. All chains lead to Genesis/Reserve (finite)
-6. Math is enforced by axiom-dmap-core.elf
-7. axiom-dmap-core.elf is identical everywhere (fingerprint)
-8. VBC ensures witnesses run real axiom-dmap-core.elf
+6. Math is enforced by axiom-core.elf
+7. axiom-core.elf is identical everywhere (fingerprint)
+8. VBC ensures witnesses run real axiom-core.elf
 
 **The system is mathematically sound.**
 
@@ -8536,3 +8536,7 @@ It is the strike that remains after the desire for a "quick exit" has been silen
 {\small\itshape Finalised in Kyoto on December 31, 2025.}
 \end{center}
 ```
+
+---
+
+*Document history: initial public release 2026-07. From this release onward, every change to this document is recorded here and in the repository git log.*
