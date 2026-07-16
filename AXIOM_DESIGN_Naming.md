@@ -42,7 +42,13 @@ Once you've accepted that Nabla's job is to remember the past correctly, catch a
 
 **TARDIS** — *Temporal Anchor for Rollback Detection and Integrity Sync*. Yes, the acronym is reverse-engineered. It holds time. It's bigger on the inside than the outside. It survives things that should kill it. The first time the chaos test killed every genesis node and the tree kept going, the name was already right.
 
-**CLARA** and the rest follow from there. Anything in Nabla that handles memory, paradox, or reconciliation across forks gets a name from the canon. They're not jokes. They're mnemonics for components whose job is temporal integrity.
+The rest follow from there — anything in Nabla that handles memory, paradox, or reconciliation across forks gets a name from the canon. They're not jokes. They're mnemonics for components whose job is temporal integrity. The key ones:
+
+**CLARA** — *Client-Led Attested Reality Alignment*. Named after Clara Oswald, the companion who walked the Doctor's fractured timestream and restored every broken version of him. CLARA does the same for a wallet whose state has fractured across poisoned validators.
+
+**JUDOON** — *Judgment Upon Divergent Or Offending Nablas*. The pool quarantine. The Judoon are the blunt, procedural police-for-hire of the canon — exactly the register for the mechanism that isolates a misbehaving node until it proves itself again.
+
+**OODS** — *Operational Observer Determination System*. The Ood share a single collective consciousness, and an Ood severed from it *knows* it has been cut off. OODS is the mesh analogue: every node carries a piece of a shared sense of the collective's size, so a partitioned or eclipsed node detects that its own estimate has collapsed.
 
 Doctor Who specifically, over other time-travel stories, because Doctor Who is *optimistic* about time. Things that go wrong can be set right. Histories that diverge can be rewoven. That's the posture Nabla needs. Not "we prevent paradoxes" — "we resolve them."
 
@@ -102,4 +108,4 @@ If anyone reads this far, they probably get it.
 
 ---
 
-*Document history: initial public release 2026-07. From this release onward, every change to this document is recorded here and in the repository git log.*
+*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS) with their canonical expansions. Every change to this document is recorded here and in the repository git log.*
