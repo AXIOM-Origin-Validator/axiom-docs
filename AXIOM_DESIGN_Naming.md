@@ -104,7 +104,7 @@ registers — the name doesn't change, the reading follows the role.
 
 **COUSIN** — *Covert Overlay for Uncensored Social Information Network*. Whatever else turns up. The censorship-resistant social diffusion gateway — positioned between ANTIE's survival mail and UNCLE's finance-grade formality, the relative who can get word around no matter who is listening.
 
-The non-relatives — **TOT** (*Tiny Outbound Tunnel*, the production client intake) and **FATMAMA** (*Fast ANTIE Transport MTA/MDA Agent*, the dev mail gateway) — are infrastructure, named for what they do.
+The non-relatives — **TOT** (*Tiny Outbound Tunnel*, the production client intake), **FATMAMA** (*Fast ANTIE Transport MTA/MDA Agent*, the dev mail gateway), and **KIDDO** (*Key-holder’s Individual Delivery Dispatch for Outbox*, the wallet-side message runner) — are infrastructure, named for what they do. KIDDO reads plainest of the three: the key-holder’s own dispatcher, moving envelopes out of the wallet’s outbox.
 
 Not deep. Made me smile. Enough.
 
@@ -118,4 +118,4 @@ If anyone reads this far, they probably get it.
 
 ---
 
-*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS); sections reordered so the Doctor Who names sit together; carriers section retitled and expanded per-name; Lambda/Nabla gained the paper's pure-function and divergence-operator readings. Every change to this document is recorded here and in the repository git log.*
+*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS); sections reordered so the Doctor Who names sit together; carriers section retitled and expanded per-name (incl. KIDDO backronym); Lambda/Nabla gained the paper's pure-function and divergence-operator readings. Every change to this document is recorded here and in the repository git log.*
