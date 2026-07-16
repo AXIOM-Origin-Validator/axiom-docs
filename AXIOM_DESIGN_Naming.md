@@ -83,11 +83,13 @@ This is deliberate, not a contradiction to reconcile. If you find one expansion
 in the spec and the other in UNCLE material, that's the design — do not
 "correct" one to match the other.
 
-## ANTIE, UNCLE, COUSIN
+## The AXIOM Carriers
 
-The transport layer. Components that carry messages between Cores — email, banking, general protocol bridges. Named after extended family because that's what they are. Relatives at varying distances, each handling a different kind of correspondence. ANTIE for the everyday mail. UNCLE for the banks. COUSIN for whatever else turns up.
+The transport layer. Components that carry messages between Cores — email, banking, general protocol bridges. Named after extended family because that's what they are: relatives at varying distances, each handling a different kind of correspondence.
 
-UNCLE is also Uncle Sam, which is the joke I'm proudest of in the whole naming scheme. The component that talks to SWIFT, the component that bridges to the dollar rails, the component that has to put on a tie and speak to the banking system in its own language — named after the figure who *is* the banking system, pointing at you from the poster. The relative you only call when something formal needs doing happens to also be the relative who sends the tax bill. Two readings, same name, both true.
+**ANTIE** — *Advanced Normalised Transmission Intermedia Extension*. The everyday mail. UMP envelopes travel as ordinary email — SMTP in, maildir spool, MTA out. This is the survival transport: when the only thing that still moves between two networks is email, AXIOM still settles.
+
+**UNCLE** — *Universal Non-linear Clearing Layer Extension*. The banks. UNCLE is also Uncle Sam, which is the joke I'm proudest of in the whole naming scheme. The component that talks to SWIFT, the component that bridges to the dollar rails, the component that has to put on a tie and speak to the banking system in its own language — named after the figure who *is* the banking system, pointing at you from the poster. The relative you only call when something formal needs doing happens to also be the relative who sends the tax bill. Two readings, same name, both true.
 
 SAM — the client half of UNCLE SAM, the desktop app the banks actually run — has
 two expansions that co-exist: **SWIFT-Aligned Messaging** and **Settlement Anchor
@@ -95,6 +97,10 @@ Mediator**. That is not ambiguity, it is precision: the client plays exactly tho
 two roles. On one side it speaks the bank's own SWIFT-shaped messaging; on the
 other it anchors and mediates AXIOM settlement. Same pattern as FACT's two
 registers — the name doesn't change, the reading follows the role.
+
+**COUSIN** — *Covert Overlay for Uncensored Social Information Network*. Whatever else turns up. The censorship-resistant social diffusion gateway — positioned between ANTIE's survival mail and UNCLE's finance-grade formality, the relative who can get word around no matter who is listening.
+
+The non-relatives — **TOT** (*Tiny Outbound Tunnel*, the production client intake) and **FATMAMA** (*Fast ANTIE Transport MTA/MDA Agent*, the dev mail gateway) — are infrastructure, named for what they do.
 
 Not deep. Made me smile. Enough.
 
@@ -108,4 +114,4 @@ If anyone reads this far, they probably get it.
 
 ---
 
-*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS); sections reordered so the Doctor Who names sit together. Every change to this document is recorded here and in the repository git log.*
+*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS); sections reordered so the Doctor Who names sit together; carriers section retitled and expanded per-name. Every change to this document is recorded here and in the repository git log.*
