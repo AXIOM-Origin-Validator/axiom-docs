@@ -10,6 +10,7 @@ Official specification documents for the AXIOM protocol.
 | [AXIOM Yellow Paper](AXIOM_YellowPaper.md) | Full protocol specification — the normative reference |
 | [Yellow Paper: Errors](AXIOM_YellowPaper_Errors.md) | Error taxonomy companion volume |
 | [Yellow Paper: SDK](AXIOM_YellowPaper_SDK.md) | Wallet/SDK behavior companion volume |
+| [Why the Names](AXIOM_DESIGN_Naming.md) | Design rationale for the naming scheme — the backronyms, the Ø, and the Doctor Who of it all |
 
 ## Yellow Paper Extensions (YPX)
 
