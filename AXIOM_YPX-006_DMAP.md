@@ -281,7 +281,7 @@ DMAP_CHECKPOINT_INTERVAL = 50_000  // snapshot every 50K instructions
 
 For a typical transaction execution (~1M instructions), this produces ~100 checkpoints. Each checkpoint is 76 bytes (8 + 4 + 32 + 32). Total trace: ~7.6KB.
 
-**Implementation note — collection semantics + JIT memory tracking.** Interior checkpoints are taken at the first instruction boundary **at or after** each interval step, not at exact multiples: the JIT executes whole basic blocks and the interpreter fuses instruction pairs, so `instruction_count` advances in jumps and rarely lands on an exact multiple of 10,000. The collector (`fast_executor.rs::run_with_checkpoints`) uses a monotonic threshold — `instruction_count >= next_checkpoint_at`, then `next_checkpoint_at += interval` (with catch-up if a block jumped past more than one boundary) — so checkpoints land "at least every interval + one block." Separately, a checkpoint's `memory_root` must reflect all writes since the previous checkpoint; JIT-compiled blocks store to guest memory through a raw pointer and bypass the interpreter's page-dirty tracking, so the JIT emits a per-page dirty-bit write after every store into a flat `jit_dirty` bytemap that `memory_root()` folds into its dirty set. (Before 2026-07-11 both mechanisms were broken — interior checkpoints never fired and JIT-written pages were invisible to the root — so production attestations carried a single, JIT-blind checkpoint; see KnownIssues KI#39.)
+**Implementation note — collection semantics + JIT memory tracking.** Interior checkpoints are taken at the first instruction boundary **at or after** each interval step, not at exact multiples: the JIT executes whole basic blocks and the interpreter fuses instruction pairs, so `instruction_count` advances in jumps and rarely lands on an exact multiple of 50,000. The collector (`fast_executor.rs::run_with_checkpoints`) uses a monotonic threshold — `instruction_count >= next_checkpoint_at`, then `next_checkpoint_at += interval` (with catch-up if a block jumped past more than one boundary) — so checkpoints land "at least every interval + one block." Separately, a checkpoint's `memory_root` must reflect all writes since the previous checkpoint; JIT-compiled blocks store to guest memory through a raw pointer and bypass the interpreter's page-dirty tracking, so the JIT emits a per-page dirty-bit write after every store into a flat `jit_dirty` bytemap that `memory_root()` folds into its dirty set. (Before 2026-07-11 both mechanisms were broken — interior checkpoints never fired and JIT-written pages were invisible to the root — so production attestations carried a single, JIT-blind checkpoint; see KnownIssues KI#39.)
 
 **Bounded collection + interval (`MAX_COLLECTED_CHECKPOINTS`, `DMAP_CHECKPOINT_INTERVAL`).** Each snapshot costs one `memory_root()` — a page-Merkle build — so collection cost is linear in the checkpoint count, and the count matters twice: at the tail (a CL5 redeem is ~600M instructions ⇒ at the original 10K interval, ~60,000 snapshots, which collapsed throughput to ~10M instr/s and made redeem hops take 60–70 s, past the SDK's 60 s poll → the finalizer's correct response mis-reported as "did not carry receiver_fact_chain"), and in the body (a typical ~8M-instruction redeem still took ~840 snapshots ⇒ ~5.5 s). Two bounds address both: **(1)** the collector caps the collected set at `MAX_COLLECTED_CHECKPOINTS` (1024) — on hitting the cap it doubles the effective interval and keeps every other checkpoint (in-stream power-of-two decimation), so a huge run coarsens instead of collecting unboundedly (total `memory_root` work `O(instructions/interval)` → `O(MAX · log(instructions/interval))`); **(2)** the base `DMAP_CHECKPOINT_INTERVAL` is 50K (was 10K), 5× fewer snapshots on the common path (~840 → ~170, ~1 s). Both are **security-transparent**: the Merkle commitment and the K reveals are taken over whatever set was collected, the verifier re-executes to each revealed checkpoint's *exact* `instruction_count`, and `N` in the detection model below is just `min(instructions/interval, 1024)`. Neither bound weakens detection — `P = 1 − (1−f)^(vK)` depends on the corrupted *fraction* `f` and reveals `K`, not `N`; a propagating cheat taints a large fraction of the (still-uniform) sample at any interval.
 
@@ -386,7 +386,7 @@ The *only* residual threat the interior checkpoints address is **"canonical bina
 
 **Why not K = 64.** K = 64 (S = 192) only extends coverage from f ≥ 10% to f ≥ 3.6% — a razor-thin slice of *late-diverging, non-propagating, single-region* cheats already largely covered by the final-checkpoint guarantee — at **~2.6× the attestation size**. Because each cheque/receipt embeds k = 3 attestations and receipts chain, that increase pushed messages past the delivery caps and broke end-to-end redeem (KI#39). K = 64 also does *not* solve the minimal-cheat case it nominally targets: a single corrupted checkpoint is caught with only ~64/N ≈ 10% probability. So high K is neither necessary for propagating cheats nor sufficient for surgical ones.
 
-**Decision.** `K = 24`, interval unchanged (10 000). Holds detection ≈ 1 − 10⁻¹⁸ against any propagating cheat across the quorum, keeps fine interior sampling, and returns the attestation to ~14 KB — the size that delivers end-to-end. A future need to catch a *surgical, non-propagating* cheat calls for a per-instruction commitment or a stronger interval guarantee, not brute-force K.
+**Decision.** `K = 24`, interval 50 000. Holds detection ≈ 1 − 10⁻¹⁸ against any propagating cheat across the quorum, keeps fine interior sampling, and returns the attestation to ~14 KB — the size that delivers end-to-end. A future need to catch a *surgical, non-propagating* cheat calls for a per-instruction commitment or a stronger interval guarantee, not brute-force K.
 
 ### 2.4 AttestationProof
 
@@ -700,7 +700,7 @@ zkp_threshold_atoms = 1_000_000
 dmap_checkpoint_interval = 50_000
 
 # Number of challenged checkpoints per attestation
-dmap_num_challenges = 64
+dmap_num_challenges = 24
 ```
 
 ### 5.3 Wire Protocol
@@ -748,6 +748,10 @@ Example (v0.2 with improvements A-D):
   S = 64 × 3 = 192 independent samples
 
   P(catch) = 1 - (90/100)^192 = 1 - 10^(-8.8) = 99.99999984%  (8.8 nines)
+
+  # NOTE: this v0.2 example uses the earlier K = 64, which was REDUCED to
+  # K = 24 in §2.3.1 (K = 64 bloated the attestation past delivery caps, KI#39).
+  # See §2.3.1 for the current K = 24 detection analysis.
 
 For security-critical attacks (modification in first 75% of execution, r ≥ 0.25):
   P(catch) = 1 - (0.75)^192 = 1 - 10^(-24) = 99.999...9%  (≥24 nines)
@@ -960,7 +964,7 @@ pub const CANONICAL_CORE_ID: [u8; 32] = [...]; // TBD at first build
 pub const DMAP_CHECKPOINT_INTERVAL: u64 = 50_000;
 
 /// Number of checkpoints challenged per attestation (Fiat-Shamir)
-pub const DMAP_NUM_CHALLENGES: u64 = 64;
+pub const DMAP_NUM_CHALLENGES: u64 = 24;
 
 /// BLAKE3 domain separation for challenge derivation
 /// Must be exactly 32 bytes (BLAKE3 keyed hash requirement)
@@ -969,8 +973,8 @@ pub const DMAP_CHALLENGE_DOMAIN: &[u8; 32] = b"AXIOM_DMAP_CHALLENGE_V1\x00\x00\x
 /// Guest memory page size for Merkle tree (4KB)
 pub const DMAP_PAGE_SIZE: u32 = 4096;
 
-/// Maximum guest memory (16MB — sufficient for Core execution)
-pub const DMAP_MAX_MEMORY: u32 = 16 * 1024 * 1024;
+/// Maximum guest memory (32MB — sufficient for Core execution)
+pub const DMAP_MAX_MEMORY: u32 = 32 * 1024 * 1024;
 ```
 
 ---

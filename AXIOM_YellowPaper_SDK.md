@@ -463,12 +463,25 @@ called, the function returns `ErrorCode::SdkNotInitialized` immediately.
 This is fail-fast by design: a misconfigured SDK should not produce
 half-formed network traffic.
 
-**ELF discovery order** (checked in order, first match wins):
+**ELF discovery order** (checked in order, first match wins; see
+`sdk/client/src/cl1.rs`):
 
-1. `$AXIOM_CORE_ELF` environment variable — explicit override
-2. `$HOME/axiom/src/core/avm-guest/target/axiom-core.elf` — dev layout
-3. `core/avm-guest/target/axiom-core.elf` — cwd-relative
-4. `../core/avm-guest/target/axiom-core.elf` — cwd-relative parent
+1. `$AXIOM_CORE_ELF` environment variable — explicit override.
+
+Then two tiers, each tried `$HOME`-relative → cwd-relative → parent-relative.
+The **`core/artifacts/` tier is searched first** — it is the committed,
+git-synced published ELF (the one whose CoreID `VERIFYING.md` pins):
+
+2. `$HOME/axiom/src/core/artifacts/axiom-core.elf`
+3. `core/artifacts/axiom-core.elf`
+4. `../core/artifacts/axiom-core.elf`
+
+Then the `core/avm-guest/target/` tier — a gitignored *local build* output,
+the fallback when you built the ELF yourself rather than using the published one:
+
+5. `$HOME/axiom/src/core/avm-guest/target/axiom-core.elf`
+6. `core/avm-guest/target/axiom-core.elf`
+7. `../core/avm-guest/target/axiom-core.elf`
 
 **Idempotency:** `setup()` is safe to call multiple times. The first
 successful call caches the ELF; subsequent calls are no-ops.
