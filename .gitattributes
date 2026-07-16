@@ -1,0 +1,8 @@
+# This is a documentation repository. Its content is Markdown specifications
+# (the White Paper, Yellow Paper, and YPX extensions) — which GitHub's Linguist
+# does not count as a "language." The only code-shaped files are the latex/
+# build templates, which are tooling, not the repository's subject. Exclude them
+# from language statistics so the repo isn't mislabeled as a TeX/Makefile project.
+latex/** linguist-documentation
+*.tex linguist-documentation
+*.cls linguist-documentation
