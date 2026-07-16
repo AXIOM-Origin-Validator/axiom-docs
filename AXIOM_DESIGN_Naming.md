@@ -52,6 +52,16 @@ The rest follow from there — anything in Nabla that handles memory, paradox, o
 
 Doctor Who specifically, over other time-travel stories, because Doctor Who is *optimistic* about time. Things that go wrong can be set right. Histories that diverge can be rewoven. That's the posture Nabla needs. Not "we prevent paradoxes" — "we resolve them."
 
+## CC — Companion Certificate
+
+Nabla doesn't run itself. The tree needs nodes, the nodes need operators, and the operators need a reason to keep their machines on. So Nabla rewards them. The reward is called **CC** — Companion Certificate.
+
+The name follows from the rest. The Doctor doesn't travel alone. Nobody who watches the show would say the Doctor *could* travel alone — the companion is half the point. The Doctor without a companion is just a brilliant lonely person rattling around in a blue box; with one, the show works. Nabla is the same. The protocol can be as elegantly designed as I can make it, but without people running nodes, it's just code on a hard drive somewhere. The operators are what turn it into a living network.
+
+Calling the credit a *certificate* matters more than calling it a *token*. A token is something you trade. A certificate is something you earn and something that says *you were here, you helped, this happened because of you*. Operators aren't liquidity providers. They're not yield farmers. They're citizens of a project that needs them, and CC is the receipt for that citizenship. You held a Nabla node up. The world used it. Here is the record.
+
+This is also the part of AXIØM I'm most stubborn about being a *social* design and not a *financial* one. Nabla is a citizen project. It runs because people choose to run it, and the protocol's job is to honour that choice — not to financialise it into something unrecognisable. CC is small, deliberate, and named after the most human role in the entire mythology. The Doctor needs a companion. So does the protocol.
+
 ## FACT — one acronym, two expansions (deliberate)
 
 FACT is spelled out two ways, on purpose, and both are correct.
@@ -72,16 +82,6 @@ UNCLE/institutional docs may use *Forensic Audit Chain for Transactions*.
 This is deliberate, not a contradiction to reconcile. If you find one expansion
 in the spec and the other in UNCLE material, that's the design — do not
 "correct" one to match the other.
-
-## CC — Companion Certificate
-
-Nabla doesn't run itself. The tree needs nodes, the nodes need operators, and the operators need a reason to keep their machines on. So Nabla rewards them. The reward is called **CC** — Companion Certificate.
-
-The name follows from the rest. The Doctor doesn't travel alone. Nobody who watches the show would say the Doctor *could* travel alone — the companion is half the point. The Doctor without a companion is just a brilliant lonely person rattling around in a blue box; with one, the show works. Nabla is the same. The protocol can be as elegantly designed as I can make it, but without people running nodes, it's just code on a hard drive somewhere. The operators are what turn it into a living network.
-
-Calling the credit a *certificate* matters more than calling it a *token*. A token is something you trade. A certificate is something you earn and something that says *you were here, you helped, this happened because of you*. Operators aren't liquidity providers. They're not yield farmers. They're citizens of a project that needs them, and CC is the receipt for that citizenship. You held a Nabla node up. The world used it. Here is the record.
-
-This is also the part of AXIØM I'm most stubborn about being a *social* design and not a *financial* one. Nabla is a citizen project. It runs because people choose to run it, and the protocol's job is to honour that choice — not to financialise it into something unrecognisable. CC is small, deliberate, and named after the most human role in the entire mythology. The Doctor needs a companion. So does the protocol.
 
 ## ANTIE, UNCLE, COUSIN
 
@@ -108,4 +108,4 @@ If anyone reads this far, they probably get it.
 
 ---
 
-*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS) with their canonical expansions. Every change to this document is recorded here and in the repository git log.*
+*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS); sections reordered so the Doctor Who names sit together. Every change to this document is recorded here and in the repository git log.*
