@@ -44,7 +44,7 @@ Once you've accepted that Nabla's job is to remember the past correctly, catch a
 
 The rest follow from there — anything in Nabla that handles memory, paradox, or reconciliation across forks gets a name from the canon. They're not jokes. They're mnemonics for components whose job is temporal integrity. The key ones:
 
-**CLARA** — Clara is Clara: the companion who goes back through the Doctor's own timestream to save him, repairing every broken moment. That is the job — the heal process for a wallet that has fallen out of sync with its validators. The expansion, *Client-Led Attested Reality Alignment*, describes the mechanism; the name came from the companion.
+**CLARA** — *Client-Led Attested Reality Alignment*. The heal process for a wallet that has fallen out of sync with its validators. Named for the companion who goes back through the Doctor's own timestream to save him, repairing every broken moment — which is exactly the job.
 
 **JUDOON** — *Judgment Upon Divergent Or Offending Nablas*. The pool quarantine. The Judoon are the blunt, procedural police-for-hire of the canon — exactly the register for the mechanism that isolates a misbehaving node until it proves itself again.
 
