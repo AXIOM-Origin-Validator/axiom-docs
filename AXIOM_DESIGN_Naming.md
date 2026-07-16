@@ -20,6 +20,8 @@ Austere names only in here. Production code that compiles to ELF doesn't need pe
 
 Where the validators argue and eventually agree. λ-calculus, because Lambda is where decisions actually get *evaluated* in the computer-science sense — functions applied, arguments resolved, results returned. Core is the law. Lambda is the courtroom. Same rules, different room.
 
+The paper sharpens it: Λ names the *integrity* layer after the λ of a pure function. A validator is a stateless evaluator — it binds its signature to whatever the canonical Core computes from the given inputs. It witnesses and attests a transition; it doesn't vote on a global history, because there isn't one.
+
 ## Nabla
 
 The one I enjoyed picking.
@@ -27,6 +29,8 @@ The one I enjoyed picking.
 ∇ is an upside-down delta. In maths it's the operator for how things change across space — gradients, flow, where the current runs, where density piles up. It watches money move across the network and records the shape of the flow. So: nabla.
 
 The second reason is the one I actually like. Delta is *change*. Nabla is the thing that watches change and makes sense of it. Lambda handles the individual deltas — every transaction, every yes-or-no. Nabla sits one layer up and integrates. The inverted delta is a quiet way of saying *I am the layer above the layer that handles change.* Most people won't notice. That's fine. I notice.
+
+And the paper adds the reading that turns out to be the sharpest: ∇ is also the divergence operator, ∇·, and divergence is literally Nabla's one job. Not agreement — the *detection of divergence*: a state consumed twice, a same-sequence fork, a split history, surfaced to the receiver at redeem. Λ evaluates; ∇ detects divergence. The whole two-layer design in five words.
 
 And Nabla isn't a ledger. It's a web of truth gossiped through the protocol. Nodes whisper what they've witnessed to their neighbours, the neighbours whisper onwards, and out of all that whispering a shared record settles into shape. No central scribe. No master copy. Just the network telling itself what happened until the story stops changing.
 
@@ -114,4 +118,4 @@ If anyone reads this far, they probably get it.
 
 ---
 
-*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS); sections reordered so the Doctor Who names sit together; carriers section retitled and expanded per-name. Every change to this document is recorded here and in the repository git log.*
+*Document history: initial public release 2026-07; 2026-07 — added the key Nabla names (CLARA, JUDOON, OODS); sections reordered so the Doctor Who names sit together; carriers section retitled and expanded per-name; Lambda/Nabla gained the paper's pure-function and divergence-operator readings. Every change to this document is recorded here and in the repository git log.*
