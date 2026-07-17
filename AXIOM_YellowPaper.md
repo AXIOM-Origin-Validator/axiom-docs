@@ -1964,11 +1964,9 @@ The Confidence Index plays the role of "anti-counterfeit cues" in an offline dig
 
 #### 11.5.3 Confidence Index Definition
 
-The Confidence Index (CI) is a compact, signed credential presented by the buyer during an offline transaction.
+The Confidence Index (CI) is **computed by the receiver** from the **Core-signed information the sender presents** — the sender's FACT chain, whose links carry k-witness signatures and Core (DMAP) attestations. It is NOT a pre-issued credential and NOT a self-reported claim: the sender hands over their verifiable transaction history, and the receiver's device runs Core locally to score it GREEN/YELLOW/RED (see YPX-010 §7.2). Ruling 2026-07-17 — this supersedes the earlier "signed credential issued at last online validation" model; the score is the receiver's, computed from the sender's Core-signed evidence.
 
-**It is NOT a self-reported claim.**
-
-It is issued during the buyer's last successful online validation and contains:
+The evidence the sender presents contains:
 - Time since last online validation
 - Number of successfully settled transactions
 - Number of detected conflicts (double spends)
@@ -2134,7 +2132,7 @@ Charge flow:
 The Ark balance is PART OF the user's total balance but SEGREGATED:
   - Normal wallet cannot spend Ark balance
   - Ark wallet cannot spend normal balance
-  - Both are the same identity (same wallet PK, different tier addresses)
+  - They are the SAME keypair addressed at two tiers — the Ark wallet is the k=0 tier address, the normal wallet a k=3/4/5 tier address, all derived from one key (§11.9.1; `generate_all_wallet_ids`). Balances are segregated by tier (distinct on-ledger state per tier address); charge/unload/self-ark authority is the shared `pk` (`verify_pk_binding`), not a certificate. (Ruling 2026-07-17: single keypair, reversing the intra-day two-keypair draft; see YPX-010 §10 + `AXIOM_DESIGN_WalletPairCollapse.md`.)
 ```
 
 **Webclient implementation:** Dedicated "Charge Ark" button with pre-filled fields:

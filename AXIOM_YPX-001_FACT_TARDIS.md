@@ -85,9 +85,18 @@ NablaConf {                             // defined in YPX-002
 }
 
 BurnProof {                             // see §1.5.4
-    burn_tx_id:             bytes32     // tx_id of the burn transaction
-    validator_sigs:         [FactWitness; 3]  // k=3 sigs over burn commitment
+    burn_tx_id:             bytes32     // tx_id of the burn transaction (the burn link)
+    validator_sigs:         [FactWitness; 3]  // the burn link's OWN k=3 FACT witnesses
+                                              // (a clone) — binds nothing about the
+                                              // target on its own; the scar↔burn tie is
+                                              // the burn link's commitment-bound
+                                              // burn_target_tx_id (§1.5.4 AS-BUILT)
 }
+
+FactLink.burn_target_tx_id: bytes32?    // §1.5.4: set on a BURN TX's own link, names
+                                        // the scar it destroys. FOLDED INTO
+                                        // compute_fact_commitment so the k=3 witnesses
+                                        // attest the target (closes the copy forge).
 ```
 
 ### 1.3 Verification Rules
@@ -381,8 +390,11 @@ inherited scar sits on a redeem link whose OWN transition is fully resolved
 (it has its own `nabla_confirmation`) — the taint is in `inherited_scar_txids`,
 not in a missing confirmation. Therefore the **own-scar counter does NOT count
 it**: `wallet.count_fact_scars()` (SDK) / `fact_scar_count()` (FFI) is
-*own-scars only* — deliberately, because those are the burn targets and an
-inherited scar is NOT burnable (burning it destroys sound money). A client that
+*own-scars only*. (Note, 2026-07-17: `list_scars` — the burn-target list — now
+ALSO offers inherited-tainted links, because the holder MAY burn them as an
+escape hatch when the origin never resolves; see §1.5.4. `count_fact_scars`
+stays own-scars-only for the "needs heal" indicator — burning is a deliberate
+loss the user chooses, not an automatic heal action.) A client that
 drives its "scarred?" indicator solely off the own-scar count will show an
 inherited-tainted wallet as **clean**, hiding the taint the whole mechanism
 exists to make visible. Clients MUST surface inherited taint separately:
@@ -437,6 +449,23 @@ DUAL DELIVERY:
 #### 1.5.4 Burning Tainted Money
 
 If a scarred link cannot be healed (fraudulent origin confirmed, Nabla node offline, or owner chooses not to wait), the owner can **burn** the tainted amount. Burning forfeits the money permanently but clears the scar, allowing checkpoint compression to proceed.
+
+**Inherited taint is burnable by the holder (§1.5.1a escape hatch, 2026-07-17).**
+A receiver who accepted money that later proves tainted holds a Nabla-CONFIRMED
+redeem link carrying an unresolved *inherited* origin txid. Confirmation does not
+clear it (consent is not cleansing), and the origin — typically a banned
+double-spender — may never resolve it, so the holder would otherwise be stuck
+forever (chain un-compressible, scar-consent gate firing on every send). The
+holder may **burn** such a link even though its own transition is confirmed:
+`validate_burn_target` treats `inherited_unresolved() > 0` as a burnable scar,
+and a genuine burn makes `is_resolved()` return true unconditionally (inherited
+taint included). This is the holder taking the loss to un-stick their wallet, and
+it is **not a laundering path** — burning destroys the link's exact amount
+(the §1.5.4 binding), so clearing inherited taint always costs the full tainted
+value. An accomplice who burns to "get healthy" ends up with zero, not clean
+money. Resolving inherited taint by burn is *local* to the holder's chain; it does
+NOT clear downstream inheritors (each holder escapes by burning their own copy) or
+change the origin txid's global status.
 
 **Design principle:** A burn is a normal CL2 transaction to a special address. It goes through the standard CL1→CL2→Lambda→CL3→CL4 pipeline. No new Core Logic mode is needed.
 
@@ -539,10 +568,31 @@ BACK LINK (scar → burn TX):
   scarred_link.burn_proof.burn_tx_id = burn_transaction.tx_id
   "This scar was resolved by THAT burn transaction."
 
-Both directions are cryptographically committed:
-  - Forward: included in burn TX signature (signed by client + k=3)
-  - Back: burn_proof.validator_sigs sign over burn_commitment (k=3)
+Both directions are cryptographically committed (AS BUILT, 2026-07-17):
+  - Forward: burn_transaction.burn_target_tx_id is folded into the burn
+    link's compute_fact_commitment (via a zero sentinel for non-burn links),
+    so the k=3 FACT witnesses SIGN which scar this burn destroys. Re-pointing
+    the burn invalidates every Dilithium fact_signature on the burn link.
+  - Back: burn_proof.validator_sigs are the burn link's OWN k=3 FACT
+    witnesses (a clone). They authenticate the burn link, not the target,
+    so on their own they bind NOTHING about which scar was burned — the
+    forward binding above is what ties the proof to its scar.
 ```
+
+> **AS-BUILT correction (2026-07-17).** An earlier draft of this section
+> claimed the back link was bound by `burn_proof.validator_sigs` signing a
+> separate `burn_commitment` (BLAKE3("AXIOM_BURN" || scarred_tx_id ||
+> wallet_pk || amount)). **That binding was never wired** —
+> `compute_burn_commitment` existed but was called only from tests, and
+> `validator_sigs` was in fact a clone of the burn link's own FACT witnesses.
+> So a BurnProof lifted off a genuinely-burned 1-atom scar could be copied
+> onto a 1000-atom scar in the same chain and washed it for free
+> (`is_resolved() == true`, then compressed away). The fix binds
+> `burn_target_tx_id` into the burn link's FACT commitment (the forward link
+> above) and makes `verify_fact_chain` require the named burn link to carry a
+> WITNESSED target naming this scar and to have destroyed its exact amount.
+> The `compute_burn_commitment` path is retired — the forward binding replaces
+> it. Regression: `fact::tests::burn_proof_copied_from_another_link_rejected`.
 
 ##### CL2 Burn Rules
 
@@ -569,14 +619,43 @@ def validate_cl2_burn(tx, sender_fact_chain):
         return Reject("burn amount must exactly match scarred link amount")
 
     # Conservation exception: atoms destroyed
+    # ... (chain-scoped enforcement of the burn↔scar tie happens later, in
+    #      verify_fact_chain — see validate_burn_proof_binding below)
     # Normal CL2 enforces sender_out + receiver_in = sender_in
     # Burn CL2 enforces sender_out = sender_in - burn_amount (no receiver_in)
     return Accept()
 ```
 
+##### Burn-proof binding (verify_fact_chain, AS BUILT 2026-07-17)
+
+Before a `burn_proof` is honored as a resolution, `verify_fact_chain` requires
+the named burn link to prove it destroyed THIS scar — otherwise a proof from a
+cheap genuine burn could be copied onto a valuable scar:
+
+```python
+def validate_burn_proof_binding(chain, scarred_link):
+    bp = scarred_link.burn_proof
+    burn_link = find_link(chain, bp.burn_tx_id)
+    if burn_link is None:
+        return Reject("E_BURN_TX_ID_NOT_IN_CHAIN")   # named burn link absent
+    # burn_link.burn_target_tx_id is bound into burn_link's FACT commitment,
+    # so the k=3 witnesses attested it; it cannot be re-pointed without
+    # invalidating every Dilithium fact_signature.
+    if burn_link.burn_target_tx_id != scarred_link.tx_id:
+        return Reject("E_BURN_TARGET_MISMATCH")      # copied-proof forge
+    if burn_link.amount != scarred_link.amount:
+        return Reject("E_BURN_AMOUNT_MISMATCH")      # wrong amount destroyed
+    return Accept()
+```
+
+`is_resolved()` itself is a per-link predicate with no chain context, so it
+cannot catch a cross-link copy — the chain-scoped check above is the guarantee,
+and it always runs (in `verify_fact_chain`) before any link is trusted as
+resolved for compression.
+
 ##### Compression After Burn
 
-Once a scarred link has `burn_proof`, it is treated identically to a link with `nabla_confirmation` for compression purposes:
+Once a scarred link has `burn_proof` **and passes the binding check above**, it is treated identically to a link with `nabla_confirmation` for compression purposes:
 
 ```
 compressible(link) =
